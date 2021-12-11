@@ -61,9 +61,6 @@ class UI {
 
         // If the info page is currently selected, update the button sensors.
         updateInfo(_tft);
-
-        // Add a delay to prevent tearing.
-        delay(10);
       }
     }
   private:
@@ -86,16 +83,13 @@ class UI {
 
     // Button pins.
     const int FRONT0 = 33;
-    const int FRONT1 = 25;
-    const int BACK0 = 26;
-    const int BACK1 = 27;
+    const int BACK0 = 25;
 
     // Joystick class.
     joystick Joystick;
 
-    // Button classes.
-    Button rightSet;
-    Button leftSet;
+    but but1;
+    but but2;
 
     // Stores the past joystick value.
     int pastX = 0;
@@ -278,8 +272,6 @@ class UI {
       Joystick.begin(X_PIN, Y_PIN, Z_PIN);
 
       // Setup the two sets of buttons for rep counting.
-      rightSet.begin(FRONT0, BACK1);
-      leftSet.begin(FRONT1, BACK0);
     }
 
     /*
@@ -447,19 +439,9 @@ class UI {
           _tft.fillRect(X_MOD + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, OFF_COLOR);
         }
         if (digitalRead(BACK0) == 0) {
-          _tft.fillRect(X_MOD + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + H_MOD - ADJ_BAR_H + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, ON_COLOR);
-        } else {
-          _tft.fillRect(X_MOD + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + H_MOD - ADJ_BAR_H + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, OFF_COLOR);
-        }
-        if (digitalRead(FRONT1) == 0) {
           _tft.fillRect(X_MOD + ADJ_BAR_W + MID_BAR_W + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, ON_COLOR);
         } else {
           _tft.fillRect(X_MOD + ADJ_BAR_W + MID_BAR_W + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, OFF_COLOR);
-        }
-        if (digitalRead(BACK1) == 0) {
-          _tft.fillRect(X_MOD + ADJ_BAR_W + MID_BAR_W + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + H_MOD - ADJ_BAR_H + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, ON_COLOR);
-        } else {
-          _tft.fillRect(X_MOD + ADJ_BAR_W + MID_BAR_W + ADJ_BAR_W / 2 - IND_SIDE_LEN / 3, Y_MOD + H_MOD - ADJ_BAR_H + ADJ_BAR_H / 2 - IND_SIDE_LEN / 2, IND_SIDE_LEN, IND_SIDE_LEN, OFF_COLOR);
         }
       }
     }
@@ -479,11 +461,9 @@ class UI {
 
     // Function to update the content displayed on the bottom bar.
     void updateBar(TFT_eSPI &_tft) {
-      delay(10);
-      if ((rightSet.read() == 1) || (leftSet.read() == 1)) {
+      if ((but1.readButton(BACK0)) || (but1.readButton(FRONT0))) {
         reps++;
         counter(_tft, 3 + _tft.textWidth(repString) + 3, D_HEIGHT - 24 + 3, reps, 999, BAR_TEXT_COLOR, BAR_COLOR);
-        delay(10);
       }
 
       currentTime = millis();
@@ -641,7 +621,7 @@ class UI {
         while (benchmark) {
           timeBar.barState(Bar, (benchEnd - millis()) / 1000 * 3);
 
-          if ((rightSet.read() == 1) || (leftSet.read() == 1)) {
+          if ((but1.readButton(BACK0)) || (but1.readButton(FRONT0))) {
             repsDone++;
             counter(_tft, PAGE_W / 2 + _tft.textWidth("Reps: ") / 2, 5 + _tft.fontHeight(), repsDone, 999, TFT_BLACK, TFT_SILVER);
             delay(10);

@@ -1,4 +1,4 @@
-// Speeds up the drawing of PNG's
+ // Speeds up the drawing of PNG's
 #define USE_LINE_BUFFER
 
 // Import the functions needed for the display.
@@ -19,6 +19,9 @@ void setup() {
   tft.begin();
   tft.setRotation(1);
   tft.fillScreen(TFT_WHITE);
+
+  pinMode(33, INPUT);
+  pinMode(25, INPUT);
 }
 
 UI trainer;

@@ -1,32 +1,24 @@
 #include <Arduino.h>
 
-class Button
-{
+class but {
   public:
-    void begin(uint8_t button1, uint8_t button2) {
-      btn1 = button1;
-      btn2 = button2;
-      state = 0;
-      lastState = state;
-      pinMode(btn1, INPUT_PULLUP);
-      pinMode(btn2, INPUT_PULLUP);
-    }
-    bool read() {
-      state = (digitalRead(btn1) && digitalRead(btn2));
+    int lastRead = 0;
+
+    bool readButton(int pin) {
       delay(5);
-      if (state == lastState) {
-        return false;
-      } else {
-        lastState = state;
-        return state;
+      int r1 = digitalRead(pin);
+      delay(5);
+
+      if (lastRead != r1) {
+        lastRead = r1;
+        if (lastRead == 1) {
+          return true;
+        }
       }
+      return false;
     }
-  private:
-    uint8_t btn1;
-    uint8_t btn2;
-    bool lastState;
-    bool state;
 };
+
 
 const int X_AXIS = 0;
 const int Y_AXIS = 1;
